@@ -3,3 +3,6 @@
 .venv/
 __pycache__/
 *.pyc
+
+# Halaman tautan unduh bersifat lokal-sandbox (memuat E2B_SANDBOX_ID)
+UNDUHAN_LINK_LANGSUNG.html

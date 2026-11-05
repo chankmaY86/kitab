@@ -164,6 +164,7 @@ class TranskripAsmakTests(unittest.TestCase):
             "TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md",
             "BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html",
             "KUNCI_PERMANEN_USTADZ_YOAD.md",
+            "scripts/serve_unduhan.py",
             "assets/asmak_thomthomiyah_hal02_khatim_tulis_tangan.png",
             "assets/asmak_thomthomiyah_hal10_asma_kabir.png",
         ]:
@@ -180,6 +181,24 @@ class TranskripAsmakTests(unittest.TestCase):
                          "18 poin terjemah syarah harus lengkap")
         self.assertNotIn("٣٢٥١", t)  # angka kotak وافق tidak masuk bagian terjemah
         self.assertIn("| ٧٧ |", t)  # tabel jadwal hari/waktu
+
+    def test_halaman_unduhan_langsung(self):
+        """Halaman live preview harus menyediakan tautan unduhan nyata."""
+        import sys
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import serve_unduhan as srv
+        for name in srv.WHITELIST:
+            with self.subTest(berkas=name):
+                self.assertTrue((ROOT / name).is_file())
+        page = srv.render_index()
+        # 9 baris tabel + 1 tombol utama paket lengkap = 10 tautan.
+        self.assertEqual(page.count('href="/download/'), len(srv.ENTRIES) + 1)
+        for name in srv.WHITELIST:
+            self.assertIn(f'href="/download/{name}"', page)
+        self.assertIn("UNDUHAN_ASMAK_THOMTHOMIYAH.zip", page)
+        self.assertIn("TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx", page)
+        self.assertIn('href="/preview"', page)
+        self.assertIn("tidak diterjemahkan", page)  # batas muhafazhah tetap tampil
 
     def test_html_offline_mandiri(self):
         h = (ROOT / "BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html").read_text(

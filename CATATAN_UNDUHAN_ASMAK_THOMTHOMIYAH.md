@@ -39,6 +39,7 @@ Kolom Latin §1A bukan pensahihan bacaan; vokalnya asumsi karena naskah gundul.
 | `assets/*.png` | 2 facsimile yang dipakai transkrip |
 | `scripts/build_docx_asmak_thomthomiyah.py` | Pembangun DOCX (reproduksi) |
 | `scripts/build_unduhan_asmak_thomthomiyah.py` | Pembangun paket unduhan ini |
+| `scripts/serve_unduhan.py` | Halaman unduh langsung (live preview, port 8000) |
 
 ## Reproduksi
 
@@ -47,5 +48,6 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements-editorial.txt
 .venv/bin/python scripts/build_docx_asmak_thomthomiyah.py
 .venv/bin/python scripts/build_unduhan_asmak_thomthomiyah.py
+.venv/bin/python scripts/serve_unduhan.py      # halaman unduh: live preview port 8000
 .venv/bin/python -m unittest discover -s tests -v
 ```
