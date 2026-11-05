@@ -1,6 +1,6 @@
 /* Indeks pencarian ringan di sisi klien (65 halaman, tanpa server). */
 import { norm, snippet } from './text.js';
-import kitab from '../data/kitab.json' with { type: 'json' };
+import kitab from '../data/kitab.json';
 
 const index = kitab.pages.map((p) => ({
   page: p,

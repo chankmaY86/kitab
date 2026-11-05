@@ -15,7 +15,8 @@ globalThis.HTMLElement = dom.window.HTMLElement;
 globalThis.localStorage = dom.window.localStorage;
 globalThis.location = dom.window.location;
 
-const { default: data } = await import('../src/data/kitab.json', { with: { type: 'json' } });
+// esbuild menangani impor JSON saat membundel skrip ini.
+import data from '../src/data/kitab.json';
 const { searchPages, SUGGESTIONS } = await import('../src/lib/search.js');
 const React = (await import('react')).default;
 const { renderToString } = await import('react-dom/server');

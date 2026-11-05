@@ -19,6 +19,10 @@ export default defineConfig({
   },
   build: {
     target: 'es2020',
-    chunkSizeWarningLimit: 2000,
+    // `STANDALONE=1` (dipakai scripts/build-standalone.mjs) menaruh semua aset
+    // di dalam JS/CSS agar hasilnya bisa di-inline menjadi satu berkas HTML.
+    assetsInlineLimit: process.env.STANDALONE ? 100_000_000 : 4096,
+    cssCodeSplit: !process.env.STANDALONE,
+    chunkSizeWarningLimit: 4000,
   },
 });

@@ -22,12 +22,26 @@ Perintah lain:
 | `npm run build` | Bangun data + bundel produksi ke `dist/` |
 | `npm run preview` | Sajikan hasil build |
 | `npm run check` | Uji data, pencarian, dan render seluruh blok (tanpa browser) |
+| `npm run standalone` | Bangun `unduh/kitab-asrar.html` — satu berkas untuk dibuka offline di HP |
 
 Master dibaca dari `../REVISI_FINAL_5_LAPIS_BERSIH_HAL01-65.md`. Untuk memakai berkas lain:
 
 ```sh
 KITAB_MASTER=/jalur/ke/master.md npm run data
 ```
+
+## Menjalankan di HP Android
+
+Tidak perlu server sendiri. Tiga pilihan, dijelaskan langkah demi langkah pada
+**[CARA-ANDROID.md](./CARA-ANDROID.md)**:
+
+1. **Tautan pratinjau sesi** — buka alamat preview di Chrome HP (sementara).
+2. **GitHub Pages** — aktifkan *Settings → Pages → Source: GitHub Actions*, lalu buka
+   `https://fatimah86-dot.github.io/kitab/` (permanen, gratis).
+3. **Satu berkas offline** — `unduh/kitab-asrar.html` (±2,7 MB) berisi seluruh teks,
+   font, sampul, dan Arabiyah; buka langsung dari pengelola berkas Chrome.
+
+Berkas mandiri dibangun ulang dengan `npm run standalone`.
 
 ## Fitur
 
