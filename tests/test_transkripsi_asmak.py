@@ -7,6 +7,13 @@ import re
 import unittest
 from pathlib import Path
 
+try:
+    from docx import Document
+    from docx.oxml.ns import qn
+    HAS_DOCX = True
+except ImportError:  # ketergantungan opsional: requirements-editorial.txt
+    HAS_DOCX = False
+
 ROOT = Path(__file__).resolve().parents[1]
 TRANSKRIP = ROOT / "TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.md"
 ASSETS = [
@@ -87,6 +94,59 @@ class TranskripAsmakTests(unittest.TestCase):
                 self.assertGreater(a.stat().st_size, 1000)
         for a in ASSETS:
             self.assertIn(f"assets/{a.name}", self.md)
+
+    def test_lapis_latin_kunci_asma(self):
+        self.assertIn("## 1A. LATINISASI KUNCI ASMA'", self.md)
+        self.assertIn("ATAS PERMINTAAN EKSPLISIT", self.md)
+        self.assertIn("tidak melatinisasi sembarangan", self.md)
+        self.assertIn("Skema yang dipakai", self.md)
+        self.assertIn("Angka وافق ٣×٣", self.md)  # angka wafaq tetap Arab
+        # Kunci utama + 14 asma' + 2 azimah + 5 varian + 2 judul harus ada.
+        for lafaz in [
+            "طمطكطجيشمحمدأل", "طشر موشش", "مهرش الش", "طفطنطفش", "كويش ظرخ",
+            "طمخ طميخ", "جفنض لمخ", "يرة بزيخ", "شوكج بجخ", "مذطص جبخ",
+            "حشتم دمخ", "مظهر شمخ", "ديوم شلش", "ارخ شمرخ", "لمخ شدمخ",
+            "تبخ بخ بخ هيسون", "دلدل طد ندكم",
+        ]:
+            with self.subTest(lafaz=lafaz):
+                self.assertIn(lafaz, self.md)
+        for latin in [
+            "ṭ-m-ṭ-k-ṭ-j-y-sy-m-ḥ-m-d-ʾ-l", "ṭasyar mawsyasy",
+            "al-Asmā", "al-Ism al-Kabīr", "Peta huruf tanpa vokal",
+        ]:
+            with self.subTest(latin=latin):
+                self.assertIn(latin, self.md)
+
+    @unittest.skipUnless(HAS_DOCX, "python-docx belum terpasang")
+    def test_docx_tersedia_dan_utuh(self):
+        docx = ROOT / "TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx"
+        self.assertTrue(docx.is_file())
+        self.assertGreater(docx.stat().st_size, 20000)
+        d = Document(docx)
+        self.assertEqual(d.core_properties.author, "Ustadz Yoad")
+        self.assertEqual(len(d.inline_shapes), 2)
+        rtl = [t for t in d.tables
+               if t._tbl.tblPr.find(qn("w:bidiVisual")) is not None]
+        self.assertEqual(len(rtl), 15, "15 kotak wafaq harus RTL")
+        # Angka Arab-Indik di DOCX harus identik dengan master Markdown
+        # (<br> pada sel tengah dirender sebagai baris baru, jadi dinormalkan).
+        for i, (t, expected) in enumerate(zip(rtl, WAFAG), 1):
+            got = [[" ".join(c.text.split()) for c in r.cells] for r in t.rows]
+            with self.subTest(wafaq_ke=i):
+                self.assertEqual(got, expected)
+        text = "\n".join(p.text for p in d.paragraphs)
+        for t in d.tables:
+            for row in t.rows:
+                text += "\n" + " | ".join(c.text for c in row.cells)
+        self.assertNotIn("`", text)
+        self.assertNotIn("*", text)  # markup Markdown tidak boleh tampil mentah
+        for s in ["طمطكطجيشمحمدأل", "٣٢٥١", "ṭasyar mawsyasy",
+                  "[TEKS ASLI DIJAGA - TIDAK DITERJEMAH KARENA THILASM/WAFAQ]"]:
+            with self.subTest(s=s):
+                self.assertIn(s, text)
+
+    def test_builder_docx_ada(self):
+        self.assertTrue((ROOT / "scripts" / "build_docx_asmak_thomthomiyah.py").is_file())
 
 
 if __name__ == "__main__":

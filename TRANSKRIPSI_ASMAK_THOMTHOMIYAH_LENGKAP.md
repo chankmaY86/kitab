@@ -15,7 +15,7 @@
 | Kategori | Ada? | Bukti dalam naskah | Perlakuan |
 |---|---|---|---|
 | **(a) Syarah / penjelasan** | Ya | Muqaddimah hal. 1, kaifiyat tiap خاتم, jadwal hari & waktu hal. 11–12, syarat «ولابد لمن أراد استعماله بالتقوى» | Di-i'rab dan diterjemahkan **terbatas** pada tata cara, waktu, hari, بخور, dan syarat (§4.3) |
-| **(b) Azimah / Wafaq / Thilasm / Asma' / Mantra** | Ya | الاسم الكبير طمطكطجيشمحمدأل, 14 asma', 15 kotak wafaq 3×3, thilasm tulis tangan hal. 2, lafaz تبخ بخ بخ هيسون, دلدل طد ندكم | **[TEKS ASLI DIJAGA - TIDAK DITERJEMAH KARENA THILASM/WAFAQ]** |
+| **(b) Azimah / Wafaq / Thilasm / Asma' / Mantra** | Ya | الاسم الكبير طمطكطجيشمحمدأل, 14 asma', 15 kotak wafaq 3×3, thilasm tulis tangan hal. 2, lafaz تبخ بخ بخ هيسون, دلدل طد ندكم | **[TEKS ASLI DIJAGA - TIDAK DITERJEMAH KARENA THILASM/WAFAQ]** · Lapis Latin bantu di §1A **hanya** atas permintaan eksplisit, dengan skema dinyatakan, bukan pengganti lafaz |
 
 **Mazhab:** `Al-Muhafazhatu 'ala al-Qadimi as-Shalih` — rasm, harakat seadanya, varian ejaan asma', dan angka Arab wafaq tidak dinormalisasi.
 
@@ -362,6 +362,66 @@ Arah baca RTL. Judul berwarna merah/hijau/ungu pada PDF ditandai dengan keterang
 اللهم صل على سيدنا محمد الفاتح الخاتم وعلى اله حق قدرة ومقدرة العظيم
 ```
 
+
+---
+
+## 1A. LATINISASI KUNCI ASMA' (LAPIS BANTU — ATAS PERMINTAAN EKSPLISIT)
+
+> **Kedudukan lapis ini.** Kunci permanen §4.2 memerintahkan menjaga lafaz azimah/asma' apa adanya dan **tidak melatinisasi sembarangan**. Lapis ini dibuat karena **diminta secara eksplisit** oleh pemilik kitab pada 5 November 2026, dengan **skema yang dinyatakan** di bawah — sehingga bukan latinisasi sembarangan. Ia **bukan pengganti, bukan pembetulan, dan bukan pensahihan bacaan**:
+>
+> - Lafaz yang mengikat tetap **huruf Arab** pada §1 dan kolom ke-2 tabel di bawah.
+> - **Angka وافق ٣×٣, bilangan hitungan, dan nomor kontak tetap Arab-Indik**, tidak dilatinisasi (§4.5).
+> - Asma' tetap **tidak diterjemahkan** — tidak ada arti/makna yang diberikan di sini (§4.1).
+> - Untuk bacaan amal, wirid, atau ijazah, rujuklah **lafaz Arab** dan guru yang berijazah. Kolom Latin hanya **alat bantu indeks, pencarian, dan pengenalan huruf**.
+
+**Skema yang dipakai (konsisten & mekanis, dapat direproduksi):**
+
+1. **Peta huruf (kolom 3)** = transliterasi harfiyah satu-satu, **tanpa vokal tambahan**: `ا=A, أ/إ/ء=ʾ, ب=b, ت=t, ث=ts, ج=j, ح=ḥ, خ=kh, د=d, ذ=dh, ر=r, ز=z, س=s, ش=sy, ص=ṣ, ض=ḍ, ط=ṭ, ظ=ẓ, ع=ʿ, غ=gh, ف=f, ق=q, ك=k, ل=l, م=m, ن=n, ه=h, و=w, ي=y, ى=ā, ة=h`. Tanda `-` = pemisah huruf, `·` = pemisah kata. **Ini kolom yang paling aman secara filologis.**
+2. **Ejaan Latin bantu (kolom 4)** = peta huruf yang diberi vokal **konvensional mekanis** agar dapat dibaca: setiap konsonan ber-`a`; konsonan + `ا` → `ā`, + `و` → `aw`, + `ي` → `ay`; konsonan akhir disukūn (tanpa vokal); `ال-` di awal → `al-`; `ة` akhir → `ah`; `ى` → `ā`. Vokal ini **asumsi, bukan harakat naskah** — naskah aslinya gundul (tanpa tasykīl).
+3. Dua **judul** (J1, J2) adalah kata Arab biasa, jadi memakai transliterasi fusha standar repo, bukan aturan mekanis di atas.
+4. Ejaan populernya «*thomthomiyah*» pada nama berkas **tidak** dipakai sebagai rujukan lafaz; yang mengikat tetap `الطمطمية`.
+
+### A. Kunci utama & judul
+
+| No | Lafaz asli (mengikat) | Peta huruf tanpa vokal | Ejaan Latin bantu | Keterangan |
+|---|---|---|---|---|
+| J1 | الأسماء الطمطمية | `A-l-ʾ-s-m-A-ʾ · A-l-ṭ-m-ṭ-m-y-h` | `al-Asmā' ath-Thamthamiyyah` | Judul kitab — kata Arab biasa, transliterasi fusha standar (bukan ejaan mekanis) |
+| J2 | الاسم الكبير | `A-l-A-s-m · A-l-k-b-y-r` | `al-Ism al-Kabīr` | Judul bagian — kata Arab biasa, transliterasi fusha standar |
+| **K** | **طمطكطجيشمحمدأل** | `ṭ-m-ṭ-k-ṭ-j-y-sy-m-ḥ-m-d-ʾ-l` | `ṭamaṭakaṭajaysyamaḥamadaʾl` | **KUNCI UTAMA** — الاسم الكبير, 14 huruf (hal. 2, 10, 11) |
+
+### B. Empat belas asma' (daftar hal. 02)
+
+| No | Lafaz asli (mengikat) | Peta huruf tanpa vokal | Ejaan Latin bantu | Sumber |
+|---|---|---|---|---|
+| 1 | طشر موشش | `ṭ-sy-r · m-w-sy-sy` | `ṭasyar mawsyasy` | Hal. 02 / خاتم 1 |
+| 2 | مهرش الش | `m-h-r-sy · A-l-sy` | `maharasy al-sy` | Hal. 02 / خاتم 2 |
+| 3 | طفطنطفش | `ṭ-f-ṭ-n-ṭ-f-sy` | `ṭafaṭanaṭafasy` | Hal. 02 / خاتم 3 |
+| 4 | كويش ظرخ | `k-w-y-sy · ẓ-r-kh` | `kawyasy ẓarakh` | Hal. 02 / خاتم 4 |
+| 5 | طمخ طميخ | `ṭ-m-kh · ṭ-m-y-kh` | `ṭamakh ṭamaykh` | Hal. 02 / خاتم 5 |
+| 6 | جفنض لمخ | `j-f-n-ḍ · l-m-kh` | `jafanaḍ lamakh` | Hal. 02 / خاتم 6 |
+| 7 | يرة بزيخ | `y-r-h · b-z-y-kh` | `yaraah bazaykh` | Hal. 02 / خاتم 7 |
+| 8 | شوكج بجخ | `sy-w-k-j · b-j-kh` | `syawkaj bajakh` | Hal. 02 / خاتم 8 |
+| 9 | مذطص جبخ | `m-dh-ṭ-ṣ · j-b-kh` | `madhaṭaṣ jabakh` | Hal. 02 / خاتم 9 |
+| 10 | حشتم دمخ | `ḥ-sy-t-m · d-m-kh` | `ḥasyatam damakh` | Hal. 02 / خاتم 10 |
+| 11 | مظهر شمخ | `m-ẓ-h-r · sy-m-kh` | `maẓahar syamakh` | Hal. 02 / خاتم 11 |
+| 12 | ديوم شلش | `d-y-w-m · sy-l-sy` | `daywam syalasy` | Hal. 02 / خاتم 12 |
+| 13 | ارخ شمرخ | `A-r-kh · sy-m-r-kh` | `ʾarakh syamarakh` | Hal. 02 / خاتم 13 |
+| 14 | لمخ شدمخ | `l-m-kh · sy-d-m-kh` | `lamakh syadamakh` | Hal. 02 / خاتم 14 |
+
+### C. Azimah tambahan & varian rasm (dijaga, tidak disamakan)
+
+| No | Lafaz asli (mengikat) | Peta huruf tanpa vokal | Ejaan Latin bantu | Sumber |
+|---|---|---|---|---|
+| A1 | تبخ بخ بخ هيسون | `t-b-kh · b-kh · b-kh · h-y-s-w-n` | `tabakh bakh bakh haysawn` | Azimah hal. 11 |
+| A2 | دلدل طد ندكم | `d-l-d-l · ṭ-d · n-d-k-m` | `daladal ṭad nadakam` | Azimah/huruf hal. 05 |
+| V1 | جفض لمخ | `j-f-ḍ · l-m-kh` | `jafaḍ lamakh` | Varian hal. 05 |
+| V2 | يرة بريخ | `y-r-h · b-r-y-kh` | `yaraah baraykh` | Varian hal. 06 |
+| V3 | مذطص جفخ | `m-dh-ṭ-ṣ · j-f-kh` | `madhaṭaṣ jafakh` | Varian hal. 07, 12 |
+| V4 | لنخ شدمخ | `l-n-kh · sy-d-m-kh` | `lanakh syadamakh` | Varian hal. 10 |
+| V5 | طشرموشش | `ṭ-sy-r-m-w-sy-sy` | `ṭasyaramawsyasy` | Varian tersambung hal. 11 |
+
+> **Catatan Ustadz Yoad:** jangan menjadikan kolom ke-4 sebagai bacaan sahih. Dalam kitab gundul, huruf tanpa harakat boleh dibaca lebih dari satu cara; menambah vokal adalah *ikhtiar bantu*, bukan *lafaz*. Kalau kelak ada ijazah bacaan dari guru, **kembalilah ke kolom Arab** dan coret saja lapis Latin ini.
+
 ---
 
 ## 2. I'ROB FUSHA (JIKA SYARAH)
@@ -431,6 +491,7 @@ Sesuai §4.3 kunci permanen: **hanya** tata cara (kaifiyat), waktu, hari, بخو
 - **15 kotak وافق ٣×٣** (14 khātam + خاتم الاسم الكبير) seluruhnya disalin dengan angka Arab-Indik asli; tidak ada angka yang diubah, dikonversi ke Latin, atau "dibetulkan" jumlahnya.
 - **Thilasm tulis tangan hal. 02** dan **dua glyph hias yang mengapit الاسم الكبير hal. 10** disimpan sebagai facsimile gambar (`assets/`), bukan dialih-aksarakan, karena bacaannya tidak dapat dipastikan.
 - **[TEKS ASLI DIJAGA - TIDAK DITERJEMAH KARENA THILASM/WAFAQ]** berlaku untuk: `طمطكطجيشمحمدأل`, ke-14 asma', `تبخ بخ بخ هيسون`, `دلدل طد ندكم`, seluruh isi kotak وافق, dan thilasm gambar.
+- **Lapis Latin §1A bersifat bantu** (dibuat atas permintaan eksplisit 5 Nov 2026, skema dinyatakan). Ia tidak mengubah lafaz Arab, tidak menerjemahkan asma', dan **tidak menyentuh angka وافق** yang tetap Arab-Indik. Untuk bacaan/ijazah, kolom Arab yang mengikat.
 - **Kamus istilah hikmah (§4.4):** kata **خاتم** (seluruh judul «خاتم الاسم…»), **وفق** (kotak angka), dan akar **بخور** (`يتبخر به`, `فيبخر به`) → **Istilah Falak/Hikmah**; tidak diterjemahkan secara bebas, dipertahankan dalam Arab dengan keterangan operasional terbatas. Istilah **تسخير**, **الجن**, **حرز**, **الجلجلوتيه**, **أهل الكهف** juga dipertahankan sebagai istilah teknis naskah. Kata زحل، مشتري، عطارد، طلسم، توكيل، خادم tidak ditemukan dalam naskah ini.
 - Ayat-ayat Al-Qur'an yang dikutip sebagian (dengan tanda `الـــى` = *ilā*) dibiarkan apa adanya; transkripsi tidak melengkapi atau membetulkan kutipan.
 
