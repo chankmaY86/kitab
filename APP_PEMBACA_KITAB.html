@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arabiyah Center — Pembaca Kitab Arab Gundul</title>
+<script type="importmap">
+{
+  "imports": {
+    "pdfjs-dist": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/legacy/build/pdf.mjs"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#0a2518;color:#fef9e8;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+header{border-bottom:1px solid rgba(212,175,55,.25);background:#081b12;padding:16px 16px}
+@media(min-width:768px){header{padding:16px 32px}}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.kicker{font-size:11px;letter-spacing:.2em;color:#d4af37;font-weight:700}
+.h1{font-size:20px;font-weight:700;margin:4px 0 0}
+.action-button,.action-button-gold{border-radius:12px;padding:10px 14px;font-size:13px;cursor:pointer;transition:150ms ease;font-weight:600;display:inline-flex;align-items:center;gap:6px;text-decoration:none;border:1px solid rgba(255,255,255,.14);color:#fef9e8;background:rgba(255,255,255,.04)}
+.action-button:hover:not(:disabled){border-color:rgba(212,175,55,.65);background:rgba(212,175,55,.08)}
+.action-button:disabled{cursor:not-allowed;opacity:.4}
+.action-button-gold{background:#d4af37;color:#0a2518;border-color:#d4af37;font-weight:800}
+.action-button-gold:hover{background:#e2c457}
+.layout{max-width:1280px;margin:0 auto;display:grid;gap:20px;padding:16px}
+@media(min-width:900px){.layout{grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);padding:32px}}
+.card{border:1px solid rgba(255,255,255,.10);background:#0d2b1d;border-radius:16px;padding:16px}
+.card h2{margin:0;font-size:15px;font-weight:700}
+.muted{color:#b8c2b1;font-size:12px;margin-top:4px;line-height:1.6}
+.meta-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.pdf-name{margin-top:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#d4af37;font-size:12px}
+.alert{margin-top:12px;color:#fca5a5;font-size:13px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);padding:10px 12px;border-radius:10px}
+.loading{margin-top:14px;color:#d4af37;font-size:13px}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0}
+.pager span{font-size:13px;color:#e9dfb1}
+.pdf-stage{max-height:75vh;overflow:auto;border-radius:12px;background:#f7f4e9;padding:8px}
+.pdf-frame{position:relative;margin:0 auto;width:fit-content;max-width:100%;user-select:none;touch-action:none}
+.pdf-frame canvas{display:block;max-width:100%;height:auto}
+.selection-box{position:absolute;border:2px solid #ef4444;background:rgba(248,113,113,.20);pointer-events:none}
+.crops-grid{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(min-width:520px){.crops-grid{grid-template-columns:repeat(3,1fr)}}
+.crop-card{border:1px solid rgba(255,255,255,.10);background:#081b12;border-radius:12px;padding:8px}
+.crop-card img{width:100%;max-height:176px;object-fit:contain;background:#fff;border-radius:6px;display:block}
+.crop-cap{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
+.crop-cap button{color:#d4af37;background:none;border:none;cursor:pointer;text-decoration:underline;font-size:12px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tab{border-radius:999px;border:1px solid rgba(255,255,255,.10);padding:6px 12px;font-size:12px;cursor:pointer;background:transparent;color:#e9dfb1}
+.tab.active{border-color:#d4af37;background:#d4af37;color:#0a2518;font-weight:700}
+.field-label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:#e9dfb1}
+.text-field{width:100%;min-height:7rem;resize:vertical;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:#081b12;padding:12px;color:#fef9e8;outline:none;line-height:1.8;font:inherit;font-size:13px}
+.text-field:focus{border-color:rgba(212,175,55,.7)}
+.text-field.small{min-height:3rem}
+.arabic-field,.arabic-print{font-family:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;font-size:20px;line-height:2.1}
+.note-box{margin-top:4px;border:1px solid rgba(212,175,55,.25);background:rgba(212,175,55,.06);padding:12px;border-radius:12px;font-size:12px;line-height:1.8;color:#ddd5b6}
+.note-box strong{color:#d4af37}
+.form-stack{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+.print-area{display:none}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  body *{visibility:hidden}
+  .print-area,.print-area *{visibility:visible}
+  .print-area{display:block!important;position:absolute;left:0;top:0;width:100%;background:#fff;color:#000;padding:24px}
+  .print-area article{margin-bottom:24px;break-inside:avoid}
+}
+.helper{font-size:11px;color:#aeb9a8;margin-top:6px}
+.file-label{cursor:pointer}
+.hidden-input{display:none}
+.tash-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.tash-btn{border-radius:999px;border:1px solid rgba(212,175,55,.5);background:rgba(212,175,55,.12);color:#d4af37;font-size:11px;font-weight:700;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.tash-btn:hover:not(:disabled){background:rgba(212,175,55,.25)}
+.tash-btn:disabled{opacity:.5;cursor:wait}
+.tash-status{font-size:11px;margin-top:6px;min-height:14px;color:#d4af37}
+.tash-status.err{color:#fca5a5}
+details.settings{border-top:1px solid rgba(255,255,255,.08);padding-top:10px;margin-top:4px}
+details.settings summary{cursor:pointer;font-size:12px;font-weight:700;color:#d4af37;list-style:none}
+details.settings summary::-webkit-details-marker{display:none}
+.settings-grid{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.settings-grid select,.settings-grid input{min-height:auto;padding:8px 10px;font-size:12px}
+.settings-grid select{width:100%;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:#081b12;color:#fef9e8;outline:none}
+.top-actions{display:flex;flex-wrap:wrap;gap:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div>
+      <div class="kicker">ARABIYAH CENTER</div>
+      <div class="h1">Pembaca Kitab Arab Gundul</div>
+    </div>
+    <div class="top-actions">
+      <button type="button" id="btn-export" class="action-button">Ekspor proyek</button>
+      <button type="button" id="btn-print" class="action-button">Cetak pasal</button>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div class="card">
+      <div class="meta-row">
+        <div>
+          <h2>Halaman sumber PDF</h2>
+          <div class="muted">Unggah kitab, lalu tarik kotak untuk memilih gambar rajah, tabel, atau bagian halaman.</div>
+        </div>
+        <label class="action-button file-label">
+          Pilih PDF
+          <input id="pdf-input" type="file" accept="application/pdf" class="hidden-input">
+        </label>
+      </div>
+      <div id="pdf-name" class="pdf-name" style="display:none"></div>
+      <div id="pdf-error" class="alert" style="display:none" role="alert"></div>
+      <div id="pdf-loading" class="loading" style="display:none">Membuka PDF…</div>
+
+      <div id="pdf-controls" style="display:none">
+        <div class="pager">
+          <button type="button" id="prev-page" class="action-button">← Sebelumnya</button>
+          <span id="page-info">Halaman 1 dari 1</span>
+          <button type="button" id="next-page" class="action-button">Berikutnya →</button>
+        </div>
+
+        <div class="pdf-stage">
+          <div id="pdf-frame" class="pdf-frame">
+            <canvas id="pdf-canvas"></canvas>
+            <div id="selection-box" class="selection-box" style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="meta-row" style="margin-top:12px">
+          <div class="muted" style="max-width:420px">Crop memakai render 300 DPI; resolusi ekspor mengikuti ukuran piksel area yang dipilih.</div>
+          <button type="button" id="btn-crop" class="action-button-gold">Simpan crop</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Crop tersimpan</h2>
+      <div id="crops-empty" class="muted" style="margin-top:8px">Belum ada crop. Unggah PDF dan pilih area halaman.</div>
+      <div id="crops-grid" class="crops-grid" style="display:none"></div>
+      <div class="helper">Tip: tarik diagonal di atas halaman PDF. Crop disimpan sebagai PNG transparan dengan latar putih.</div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <div class="card">
+      <div class="meta-row">
+        <div>
+          <h2>Teks pasal</h2>
+          <div class="muted">Isi dan periksa tiap blok secara terpisah.</div>
+        </div>
+        <button type="button" id="btn-add-passage" class="action-button">+ Pasal</button>
+      </div>
+
+      <div id="passage-tabs" class="tabs"></div>
+
+      <div id="passage-form" class="form-stack">
+        <label class="block">
+          <span class="field-label">Judul pasal</span>
+          <input id="f-title" class="text-field small" placeholder="Contoh: Pasal pertama">
+        </label>
+
+        <label class="block">
+          <span class="field-label">[Teks Arab Asli] — salin apa adanya</span>
+          <textarea id="f-original" dir="rtl" class="text-field arabic-field" placeholder="اكتب النص العربي الأصلي هنا"></textarea>
+        </label>
+
+        <div class="block">
+          <div class="tash-row">
+            <span class="field-label" style="margin:0">[Teks Arab Berharakat] — hasil tashih</span>
+            <button type="button" id="btn-tash" class="tash-btn">✨ Tashkeel otomatis</button>
+          </div>
+          <textarea id="f-vowelled" dir="rtl" class="text-field arabic-field" placeholder="أدخل النص بعد ضبط الحركات ومراجعته"></textarea>
+          <div id="tash-status" class="tash-status"></div>
+        </div>
+
+        <label class="block">
+          <span class="field-label">[Transliterasi Latin Fonetik] — periksa aturan washal</span>
+          <textarea id="f-latin" dir="ltr" class="text-field" placeholder="Masukkan transliterasi lengkap pasal"></textarea>
+        </label>
+
+        <label class="block">
+          <span class="field-label">[Terjemahan Bahasa Indonesia]</span>
+          <textarea id="f-translation" dir="ltr" class="text-field" placeholder="Masukkan terjemahan bahasa Indonesia"></textarea>
+        </label>
+
+        <label class="block">
+          <span class="field-label">Catatan pemeriksaan / rujukan</span>
+          <textarea id="f-note" dir="ltr" class="text-field" style="min-height:5rem" placeholder="Catat halaman, sumber, koreksi, atau keterangan editor"></textarea>
+        </label>
+      </div>
+
+      <details class="settings">
+        <summary>⚙ Pengaturan Tashkeel (HarfScript)</summary>
+        <div class="settings-grid">
+          <label>
+            <span class="field-label">Mode</span>
+            <select id="tash-mode">
+              <option value="server">Server Next.js — POST ke /api/diacritize</option>
+              <option value="direct">Langsung ke api.harfscript.com (API key di browser)</option>
+            </select>
+          </label>
+          <label id="wrap-endpoint">
+            <span class="field-label">Endpoint API</span>
+            <input id="tash-endpoint" class="text-field small" placeholder="/api/diacritize">
+          </label>
+          <label id="wrap-key" style="display:none">
+            <span class="field-label">HARFSCRIPT_API_KEY</span>
+            <input id="tash-key" type="password" class="text-field small" placeholder="sk-…">
+          </label>
+          <div class="helper" style="margin-top:0">
+            Mode <b>Server</b>: pakai route <code>app/api/diacritize/route.ts</code> di proyek Next.js kamu (key tetap di server, lebih aman).<br>
+            Mode <b>Langsung</b>: key disimpan hanya di localStorage browser ini — teks tetap diproses langsung oleh Harfscript.
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="note-box">
+      <strong>Penting:</strong> aplikasi ini menyediakan editor dan crop PDF, bukan tashih otomatis. Harakat, transliterasi, dan terjemahan perlu diperiksa oleh pembaca yang menguasai teks dan kaidah yang digunakan. Jangan menganggap hasil OCR atau pembacaan otomatis sebagai teks kitab yang sudah sahih.
+    </div>
+  </section>
+</main>
+
+<section id="print-area" class="print-area"></section>
+
+<script type="module">
+import * as pdfjs from "pdfjs-dist";
+
+let pdfBytes = null;
+let pdfDocument = null;
+let pdfDocRef = null;
+let pageNumber = 1;
+let pageCount = 0;
+let pdfName = "";
+let selection = null;
+let crops = [];
+let passages = [];
+let activePassageId = null;
+
+let isDragging = false;
+let dragStart = null;
+
+const canvas = document.getElementById('pdf-canvas');
+const frame = document.getElementById('pdf-frame');
+const selBox = document.getElementById('selection-box');
+const pdfInput = document.getElementById('pdf-input');
+const pdfNameEl = document.getElementById('pdf-name');
+const pdfErrorEl = document.getElementById('pdf-error');
+const pdfLoadingEl = document.getElementById('pdf-loading');
+const pdfControls = document.getElementById('pdf-controls');
+const pageInfo = document.getElementById('page-info');
+const prevBtn = document.getElementById('prev-page');
+const nextBtn = document.getElementById('next-page');
+
+function emptyPassage(){
+  return { id: Date.now()+Math.floor(Math.random()*1000), title:"Pasal baru", original:"", vowelled:"", latin:"", translation:"", note:"" };
+}
+
+function init(){
+  const p = emptyPassage();
+  passages = [p];
+  activePassageId = p.id;
+  renderPassageTabs();
+  bindForm();
+  updatePrintArea();
+  loadFromStorage();
+}
+
+function saveToStorage(){
+  try{
+    localStorage.setItem('kitab-passages', JSON.stringify(passages));
+    localStorage.setItem('kitab-active', String(activePassageId));
+    localStorage.setItem('kitab-crops', JSON.stringify(crops));
+    localStorage.setItem('kitab-pdfname', pdfName);
+  }catch{}
+}
+function loadFromStorage(){
+  try{
+    const s = localStorage.getItem('kitab-passages');
+    if(s){
+      const arr = JSON.parse(s);
+      if(Array.isArray(arr) && arr.length){ passages = arr; }
+    }
+    const aid = localStorage.getItem('kitab-active');
+    if(aid) activePassageId = Number(aid);
+    const c = localStorage.getItem('kitab-crops');
+    if(c){
+      const arr = JSON.parse(c);
+      if(Array.isArray(arr)) crops = arr;
+    }
+    const pn = localStorage.getItem('kitab-pdfname');
+    if(pn) { pdfName = pn; if(pdfName) { pdfNameEl.textContent = pdfName; pdfNameEl.style.display='block'; } }
+    if(!activePassageId && passages.length) activePassageId = passages[0].id;
+    renderCrops();
+    renderPassageTabs();
+    syncForm();
+    updatePrintArea();
+  }catch{}
+}
+
+function getActive(){
+  return passages.find(p=>p.id===activePassageId) || passages[0];
+}
+
+function renderPassageTabs(){
+  const el = document.getElementById('passage-tabs');
+  el.innerHTML='';
+  passages.forEach((p,i)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='tab'+(p.id===activePassageId?' active':'');
+    b.textContent = p.title || `Pasal ${i+1}`;
+    b.onclick=()=>{ activePassageId=p.id; renderPassageTabs(); syncForm(); saveToStorage(); };
+    // right-click to delete? add context
+    b.oncontextmenu=(e)=>{
+      e.preventDefault();
+      if(passages.length<=1) return;
+      if(confirm(`Hapus "${b.textContent}"?`)){
+        passages = passages.filter(x=>x.id!==p.id);
+        if(activePassageId===p.id) activePassageId=passages[0].id;
+        renderPassageTabs(); syncForm(); updatePrintArea(); saveToStorage();
+      }
+    };
+    el.appendChild(b);
+  });
+}
+
+let syncLock=false;
+function syncForm(){
+  const a=getActive();
+  if(!a) return;
+  syncLock=true;
+  document.getElementById('f-title').value=a.title;
+  document.getElementById('f-original').value=a.original;
+  document.getElementById('f-vowelled').value=a.vowelled;
+  document.getElementById('f-latin').value=a.latin;
+  document.getElementById('f-translation').value=a.translation;
+  document.getElementById('f-note').value=a.note;
+  syncLock=false;
+}
+
+function bindForm(){
+  const map={
+    'f-title':'title',
+    'f-original':'original',
+    'f-vowelled':'vowelled',
+    'f-latin':'latin',
+    'f-translation':'translation',
+    'f-note':'note'
+  };
+  Object.entries(map).forEach(([id,key])=>{
+    document.getElementById(id).addEventListener('input', (e)=>{
+      if(syncLock) return;
+      const a=getActive();
+      if(!a) return;
+      a[key]=e.target.value;
+      if(key==='title') renderPassageTabs();
+      updatePrintArea();
+      saveToStorage();
+    });
+  });
+}
+
+function renderCrops(){
+  const empty=document.getElementById('crops-empty');
+  const grid=document.getElementById('crops-grid');
+  if(crops.length===0){
+    empty.style.display='block';
+    grid.style.display='none';
+    grid.innerHTML='';
+    return;
+  }
+  empty.style.display='none';
+  grid.style.display='grid';
+  grid.innerHTML='';
+  crops.forEach((crop,i)=>{
+    const fig=document.createElement('figure');
+    fig.className='crop-card';
+    fig.innerHTML=`
+      <img src="${crop.dataUrl}" alt="Crop halaman ${crop.page}">
+      <div class="crop-cap"><span>Halaman ${crop.page}</span><button type="button" data-i="${i}">Unduh</button></div>
+      <button type="button" data-del="${i}" style="margin-top:6px;font-size:11px;color:#fca5a5;background:none;border:none;cursor:pointer;text-decoration:underline">Hapus</button>
+    `;
+    grid.appendChild(fig);
+  });
+  grid.querySelectorAll('[data-i]').forEach(btn=>{
+    btn.onclick=()=>{
+      const idx=Number(btn.getAttribute('data-i'));
+      const crop=crops[idx];
+      const a=document.createElement('a');
+      a.href=crop.dataUrl;
+      a.download=`crop-halaman-${crop.page}-${idx+1}.png`;
+      a.click();
+    };
+  });
+  grid.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick=()=>{
+      const idx=Number(btn.getAttribute('data-del'));
+      crops.splice(idx,1);
+      renderCrops(); saveToStorage();
+    };
+  });
+}
+
+function updatePrintArea(){
+  const area=document.getElementById('print-area');
+  area.innerHTML = passages.map(p=>`
+    <article style="margin-bottom:28px;break-inside:avoid">
+      <h2 style="font-size:20px;font-weight:800;margin:0 0 12px">${escapeHtml(p.title||'Tanpa judul')}</h2>
+      <h3 style="font-weight:700;margin:12px 0 4px">[Teks Arab Asli]</h3>
+      <p dir="rtl" class="arabic-print" style="white-space:pre-wrap">${escapeHtml(p.original)}</p>
+      <h3 style="font-weight:700;margin:12px 0 4px">[Teks Arab Berharakat]</h3>
+      <p dir="rtl" class="arabic-print" style="white-space:pre-wrap">${escapeHtml(p.vowelled)}</p>
+      <h3 style="font-weight:700;margin:12px 0 4px">[Transliterasi Latin Fonetik]</h3>
+      <p style="white-space:pre-wrap">${escapeHtml(p.latin)}</p>
+      <h3 style="font-weight:700;margin:12px 0 4px">[Terjemahan Bahasa Indonesia]</h3>
+      <p style="white-space:pre-wrap">${escapeHtml(p.translation)}</p>
+      ${p.note? `<h3 style="font-weight:700;margin:12px 0 4px">Catatan</h3><p style="white-space:pre-wrap">${escapeHtml(p.note)}</p>`:''}
+    </article>
+  `).join('');
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showError(msg){
+  if(!msg){ pdfErrorEl.style.display='none'; pdfErrorEl.textContent=''; return; }
+  pdfErrorEl.textContent=msg;
+  pdfErrorEl.style.display='block';
+}
+
+// PDF handling
+pdfInput.addEventListener('change', (e)=>{
+  const file=e.target.files?.[0];
+  if(!file) return;
+  if(file.type!=='application/pdf'){
+    showError('Pilih file PDF.');
+    return;
+  }
+  pdfName=file.name;
+  pdfNameEl.textContent=pdfName;
+  pdfNameEl.style.display='block';
+  showError('');
+  pdfBytes=null;
+  file.arrayBuffer().then(buf=>{
+    pdfBytes=new Uint8Array(buf);
+    openPdf();
+  });
+  e.target.value='';
+});
+
+async function openPdf(){
+  if(!pdfBytes) return;
+  pdfLoadingEl.style.display='block';
+  showError('');
+  pdfControls.style.display='none';
+  try{
+    const doc = await pdfjs.getDocument({ data: pdfBytes, disableWorker:true }).promise;
+    pdfDocRef=doc;
+    pdfDocument=doc;
+    pageCount=doc.numPages;
+    pageNumber=1;
+    selection=null;
+    crops=[];
+    renderCrops();
+    updatePager();
+    pdfControls.style.display='block';
+    await renderPage();
+  }catch(err){
+    console.error(err);
+    showError('PDF tidak dapat dibuka. Coba file PDF lain atau ekspor ulang PDF tersebut.');
+  }finally{
+    pdfLoadingEl.style.display='none';
+    saveToStorage();
+  }
+}
+
+async function renderPage(){
+  if(!pdfDocument || !canvas) return;
+  try{
+    const page = await pdfDocument.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: 300/72 });
+    const ctx=canvas.getContext('2d');
+    canvas.width=Math.ceil(viewport.width);
+    canvas.height=Math.ceil(viewport.height);
+    await page.render({ canvasContext:ctx, viewport }).promise;
+    selection=null;
+    hideSelection();
+    updatePager();
+  }catch(err){
+    console.error(err);
+    showError('Halaman PDF gagal dirender.');
+  }
+}
+
+function updatePager(){
+  pageInfo.textContent=`Halaman ${pageNumber} dari ${pageCount}`;
+  prevBtn.disabled = pageNumber<=1;
+  nextBtn.disabled = pageNumber>=pageCount;
+}
+
+prevBtn.onclick=()=>{
+  if(pageNumber>1){ pageNumber=Math.max(1, pageNumber-1); renderPage(); }
+};
+nextBtn.onclick=()=>{
+  if(pageNumber<pageCount){ pageNumber=Math.min(pageCount, pageNumber+1); renderPage(); }
+};
+
+// Selection handling
+function pointerPos(e){
+  const rect = frame.getBoundingClientRect();
+  const cw = canvas.width;
+  const ch = canvas.height;
+  if(!rect.width || !rect.height) return {x:0,y:0};
+  const x = ((e.clientX - rect.left)/rect.width)*cw;
+  const y = ((e.clientY - rect.top)/rect.height)*ch;
+  return { x: Math.max(0,Math.min(cw,x)), y: Math.max(0,Math.min(ch,y)) };
+}
+
+frame.addEventListener('pointerdown', (e)=>{
+  if(!pdfDocument) return;
+  frame.setPointerCapture(e.pointerId);
+  const p=pointerPos(e);
+  dragStart={x:p.x,y:p.y};
+  isDragging=true;
+  selection={ x:p.x, y:p.y, width:0, height:0 };
+  updateSelectionBox();
+});
+
+frame.addEventListener('pointermove', (e)=>{
+  if(!isDragging || !dragStart) return;
+  const p=pointerPos(e);
+  selection={
+    x: Math.min(dragStart.x, p.x),
+    y: Math.min(dragStart.y, p.y),
+    width: Math.abs(p.x - dragStart.x),
+    height: Math.abs(p.y - dragStart.y)
+  };
+  updateSelectionBox();
+});
+
+frame.addEventListener('pointerup', ()=>{
+  isDragging=false;
+  dragStart=null;
+});
+frame.addEventListener('pointercancel', ()=>{
+  isDragging=false;
+  dragStart=null;
+});
+
+function updateSelectionBox(){
+  if(!selection){ hideSelection(); return; }
+  const cw=canvas.width||1, ch=canvas.height||1;
+  selBox.style.display='block';
+  selBox.style.left=(selection.x/cw*100)+'%';
+  selBox.style.top=(selection.y/ch*100)+'%';
+  selBox.style.width=(selection.width/cw*100)+'%';
+  selBox.style.height=(selection.height/ch*100)+'%';
+}
+function hideSelection(){
+  selBox.style.display='none';
+}
+
+// Crop
+document.getElementById('btn-crop').onclick=()=>{
+  if(!canvas || !selection || selection.width<5 || selection.height<5){
+    showError('Tarik kotak di atas halaman PDF untuk memilih area crop.');
+    return;
+  }
+  const out=document.createElement('canvas');
+  out.width=Math.round(selection.width);
+  out.height=Math.round(selection.height);
+  const ctx=out.getContext('2d');
+  if(!ctx) return;
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,out.width,out.height);
+  ctx.drawImage(canvas, Math.round(selection.x), Math.round(selection.y), out.width, out.height, 0,0,out.width,out.height);
+  crops.push({ dataUrl: out.toDataURL('image/png'), page: pageNumber });
+  selection=null;
+  hideSelection();
+  showError('');
+  renderCrops();
+  saveToStorage();
+};
+
+// Passages
+document.getElementById('btn-add-passage').onclick=()=>{
+  const p=emptyPassage();
+  passages.push(p);
+  activePassageId=p.id;
+  renderPassageTabs();
+  syncForm();
+  updatePrintArea();
+  saveToStorage();
+  document.getElementById('f-title').focus();
+};
+
+document.getElementById('btn-export').onclick=()=>{
+  const project={
+    app:"Arabiyah Center — Pembaca Kitab",
+    sourcePdf: pdfName,
+    passages,
+    crops: crops.map(c=>({ page:c.page, imageDataUrl:c.dataUrl })),
+    exportedAt: new Date().toISOString()
+  };
+  const blob=new Blob([JSON.stringify(project,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='proyek-baca-kitab.json';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById('btn-print').onclick=()=>{
+  updatePrintArea();
+  window.print();
+};
+
+// Tashkeel otomatis (Harfscript)
+const tashMode = document.getElementById('tash-mode');
+const tashEndpoint = document.getElementById('tash-endpoint');
+const tashKey = document.getElementById('tash-key');
+const wrapEndpoint = document.getElementById('wrap-endpoint');
+const wrapKey = document.getElementById('wrap-key');
+const tashStatus = document.getElementById('tash-status');
+const tashBtn = document.getElementById('btn-tash');
+
+function setTashStatus(msg, err) {
+  tashStatus.textContent = msg || '';
+  tashStatus.className = 'tash-status' + (err ? ' err' : '');
+}
+
+function tashSettingsInit() {
+  // Default: mode langsung + key bawaan, supaya langsung jalan tanpa setup.
+  tashMode.value = localStorage.getItem('tash-mode') || 'direct';
+  tashEndpoint.value = localStorage.getItem('tash-endpoint') || '/api/diacritize';
+  tashKey.value = localStorage.getItem('tash-key') !== null
+    ? localStorage.getItem('tash-key')
+    : DEFAULT_TASH_KEY;
+
+  const sync = () => {
+    const direct = tashMode.value === 'direct';
+    wrapKey.style.display = direct ? 'block' : 'none';
+    wrapEndpoint.style.display = direct ? 'none' : 'block';
+    localStorage.setItem('tash-mode', tashMode.value);
+  };
+  tashMode.onchange = sync;
+  tashEndpoint.oninput = () => localStorage.setItem('tash-endpoint', tashEndpoint.value.trim() || '/api/diacritize');
+  tashKey.oninput = () => localStorage.setItem('tash-key', tashKey.value.trim());
+  sync();
+}
+
+const DEFAULT_TASH_KEY = ""; // API key tidak disimpan di file — isi lewat Pengaturan Tashkeel (localStorage)
+
+async function callTashkeel(text) {
+  const mode = tashMode.value || localStorage.getItem('tash-mode') || 'direct';
+
+  if (mode === 'direct') {
+    const key = (tashKey.value || '').trim();
+    if (!key) throw new Error('API key Harfscript belum diisi di Pengaturan Tashkeel.');
+    const res = await fetch('https://api.harfscript.com/v1/diacritize', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text, mode: 'full' }),
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) throw new Error((data && data.error) || `Gagal (HTTP ${res.status}).`);
+    if (typeof data?.text !== 'string') throw new Error('Format respons tashkeel tidak dikenali.');
+    return data.text;
+  }
+
+  const endpoint = (tashEndpoint.value || '').trim() || localStorage.getItem('tash-endpoint') || '/api/diacritize';
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error((data && data.error) || `Gagal (HTTP ${res.status}).`);
+  if (typeof data?.text !== 'string') throw new Error('Format respons tashkeel tidak dikenali.');
+  return data.text;
+}
+
+tashBtn.onclick = async () => {
+  const a = getActive();
+  if (!a) return;
+
+  let text = (a.original || '').trim();
+  if (!text) text = (a.vowelled || '').trim();
+  if (!text) { setTashStatus('Isi dulu [Teks Arab Asli] sebelum tashkeel.', true); return; }
+  if (text.length > 10000) { setTashStatus('Teks terlalu panjang. Batasnya 10.000 karakter.', true); return; }
+
+  tashBtn.disabled = true;
+  setTashStatus('Memproses tashkeel…');
+  try {
+    const result = await callTashkeel(text);
+    a.vowelled = result;
+    syncForm();
+    updatePrintArea();
+    saveToStorage();
+    setTashStatus('✓ Tashkeel selesai — hasil masuk ke [Teks Arab Berharakat].');
+  } catch (e) {
+    setTashStatus('Gagal: ' + (e && e.message ? e.message : e), true);
+  } finally {
+    tashBtn.disabled = false;
+  }
+};
+
+tashSettingsInit();
+
+// Init
+init();
+</script>
+</body>
+</html>
