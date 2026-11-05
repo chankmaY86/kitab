@@ -5,8 +5,9 @@ import Home from './components/Home.jsx';
 import Reader from './components/Reader.jsx';
 import SearchView from './components/SearchView.jsx';
 import SettingsView from './components/SettingsView.jsx';
+import Arabiyah from './components/Arabiyah.jsx';
 import Drawer from './components/Drawer.jsx';
-import { Book, Bookmark, Layers, Menu, Moon, Search, Settings, Sepia, Sun } from './components/Icons.jsx';
+import { Book, Bookmark, Layers, Menu, Moon, Search, Settings, Sepia, Sun, Sparkle } from './components/Icons.jsx';
 
 const CYCLE = ['light', 'sepia', 'dark'];
 const MODE_ICON = { light: Sun, sepia: Sepia, dark: Moon };
@@ -17,6 +18,7 @@ function parseHash() {
   if (!h) return { view: 'home' };
   if (h === 'cari') return { view: 'search' };
   if (h === 'pengaturan' || h === 'penanda') return { view: 'settings' };
+  if (h === 'arabiyah' || h === 'belajar') return { view: 'arabiyah' };
   const m = h.match(/^hal-(\d{1,3})$/);
   if (m) return { view: 'page', num: Number(m[1]) };
   return { view: 'home' };
@@ -82,6 +84,7 @@ export default function App() {
   }, [route]);
 
   const page = route.view === 'page' ? pages.find((p) => p.num === route.num) : null;
+  const activePage = page || pages.find((p) => p.num === store.lastPage) || pages[0];
   const notFound = route.view === 'page' && !page;
 
   const toggleLayer = useCallback(
@@ -149,6 +152,17 @@ export default function App() {
         </div>
 
         <div className="topbar-actions">
+          <button
+            className={`btn small arabiyah-link${route.view === 'arabiyah' ? ' is-active' : ''}`}
+            onClick={() => go('#/arabiyah')}
+            aria-pressed={route.view === 'arabiyah'}
+            title="Arabiyah Center — ruang belajar bahasa Arab"
+          >
+            <span className="arabiyah-glyph" aria-hidden="true">
+              <Sparkle size={15} />
+            </span>
+            <span className="arabiyah-link-text">Arabiyah</span>
+          </button>
           <button className="icon-btn" onClick={cycleMode} title={`Tema: ${prefs.mode}`} aria-label="Ganti tema">
             <ModeIcon />
           </button>
@@ -183,6 +197,7 @@ export default function App() {
             lastPage={store.lastPage}
             onOpen={openPage}
             onOpenBookmarks={() => go('#/pengaturan')}
+            onOpenArabiyah={() => go('#/arabiyah')}
           />
         )}
 
@@ -197,6 +212,7 @@ export default function App() {
             isBookmarked={marked}
             onToggleBookmark={onToggleBookmark}
             onToggleLayer={toggleLayer}
+            onStudy={() => go('#/arabiyah')}
           />
         )}
 
@@ -221,6 +237,8 @@ export default function App() {
             }}
           />
         )}
+
+        {route.view === 'arabiyah' && <Arabiyah page={activePage} onOpenPage={openPage} />}
 
         {route.view === 'settings' && (
           <SettingsView

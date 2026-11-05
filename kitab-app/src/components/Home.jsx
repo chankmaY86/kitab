@@ -21,7 +21,7 @@ function PageCard({ page, onOpen, marked }) {
   );
 }
 
-export default function Home({ meta, pages, onOpen, bookmarks, onOpenBookmarks, lastPage }) {
+export default function Home({ meta, pages, onOpen, bookmarks, onOpenBookmarks, onOpenArabiyah, lastPage }) {
   const [tab, setTab] = useState('Semua');
   const [q, setQ] = useState('');
   const [showAll, setShowAll] = useState(false);
@@ -66,6 +66,9 @@ export default function Home({ meta, pages, onOpen, bookmarks, onOpenBookmarks, 
             </button>
             <button className="btn" onClick={onOpenBookmarks}>
               <Bookmark size={16} /> Penanda ({bookmarks.length})
+            </button>
+            <button className="btn" onClick={onOpenArabiyah}>
+              <Star size={16} /> Arabiyah Center
             </button>
           </div>
         </div>
@@ -147,6 +150,16 @@ export default function Home({ meta, pages, onOpen, bookmarks, onOpenBookmarks, 
               tuntunan praktik. Preferensi ini tersimpan di perangkat Anda.
             </p>
             <p>Pintasan: ← dan → untuk berpindah halaman, / untuk mencari.</p>
+          </div>
+          <div className="info-card">
+            <h3>Arabiyah Center</h3>
+            <p>
+              Ruang belajar bahasa Arab dengan enam mode: kamus, nahwu &amp; i'rab, sharaf, balaghah, imla', serta arudh.
+              Tersedia keyboard hijaiyah dan contoh cepat dari halaman kitab yang sedang dibaca.
+            </p>
+            <button className="btn small" onClick={onOpenArabiyah} style={{ marginTop: 6 }}>
+              <Star size={14} /> Buka ruang belajar
+            </button>
           </div>
           <div className="info-card">
             <h3>Tentang sumber teks</h3>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Copy, Bookmark, ArrowLeft, Check, Print, Layers as LayersIcon } from './Icons.jsx';
+import { ChevronLeft, ChevronRight, Copy, Bookmark, ArrowLeft, Check, Print, Layers as LayersIcon, Sparkle } from './Icons.jsx';
 import Blocks from './Blocks.jsx';
 import { stripInline, tidy } from '../lib/text.js';
 
@@ -15,6 +15,7 @@ export default function Reader({
   isBookmarked,
   onToggleBookmark,
   onToggleLayer,
+  onStudy,
   query,
 }) {
   const prev = pages.find((p) => p.num === page.num - 1);
@@ -99,6 +100,14 @@ export default function Reader({
           </button>
           <button className="icon-btn" onClick={() => window.print()} title="Cetak" aria-label="Cetak">
             <Print />
+          </button>
+          <button
+            className="icon-btn"
+            onClick={() => onStudy?.(page.num)}
+            title="Belajar halaman ini di Arabiyah Center"
+            aria-label="Belajar halaman ini di Arabiyah Center"
+          >
+            <Sparkle />
           </button>
         </div>
       </div>

@@ -40,6 +40,23 @@ KITAB_MASTER=/jalur/ke/master.md npm run data
 - **Salin halaman**, **cetak** (gaya cetak khusus), daftar isi berbentuk laci, pintasan `←` `→` dan `/`.
 - Nada dan struktur mengikuti naskah: klaim khasiat ditandai sebagai isi tradisi, bukan bukti medis.
 
+## Arabiyah Center (ruang belajar bahasa Arab)
+
+Rute `#/arabiyah` (tombol **Arabiyah** di bilah atas). Dibangun dari komponen
+"Arabiyah Center" yang diberikan, di-port dari Tailwind/Next.js ke CSS modul
+aplikasi ini tanpa mengubah perilaku maupun naskah panduannya:
+
+- Enam mode: **Kamus · Nahwu & I'rab · Sharaf & Wazan · Balaghah · Imla' & Kitabah · Arudh & Qafiyah**.
+- Panel sidebar + tab mode, kartu percakapan, contoh cepat, textarea Arab,
+  dan **keyboard hijaiyah** 32 tombol (dengan hapus, bersihkan, spasi, sisip di posisi kursor).
+- Respons dihasilkan **lokal** oleh `src/lib/arabiyah.js` (`generateSmartResponse`),
+  termasuk panduan umum belajar dan panduan per mode — bukan model bahasa.
+- Integrasi kitab: contoh cepat tambahan **"Dari kitab · halaman N"** memakai kutipan
+  Arab halaman yang sedang dibaca, dan tombol bulan-bintang di pembaca membuka
+  Arabiyah dengan konteks halaman tersebut.
+- `npm run check` menguji 6 mode, 32 tombol keyboard, format setiap respons,
+  dan render komponennya.
+
 ## Struktur
 
 ```
@@ -49,11 +66,12 @@ kitab-app/
 │   ├── titles.txt       # judul Latin & bagian per halaman
 │   └── check.mjs        # uji data + pencarian + render
 ├── src/
-│   ├── components/      # Home, Reader, Blocks, SearchView, SettingsView, Drawer, Icons
-│   ├── lib/             # text.js (parser inline), search.js (indeks), store.js (localStorage)
+│   ├── components/      # Home, Reader, Blocks, SearchView, SettingsView, Drawer, Arabiyah, Icons
+│   ├── lib/             # text.js, search.js, store.js, arabiyah.js (aturan respons belajar)
 │   ├── data/kitab.json  # hasil parser (dibangun, ikut repo agar app langsung jalan)
 │   ├── App.jsx          # router hash + topbar + tema
-│   └── index.css
+│   ├── index.css        # tema pembaca kitab
+│   └── arabiyah.css     # tema gelap-hijau/emas ruang belajar
 └── public/art/sampul.jpg
 ```
 

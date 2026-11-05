@@ -88,5 +88,24 @@ ok(renderedPages === 65, `65 halaman dirender (5 lapis × 65)`);
 const wafqHtml = renderToString(React.createElement(Blocks, { blocks: data.pages.find((p) => p.hasTable).layers.arab.blocks }));
 ok(wafqHtml.includes('class="wafaq'), 'tabel wafaq dirender sebagai kotak wafaq');
 
+console.log('Arabiyah Center');
+const { FEATURES, ARABIC_KEYS, generateSmartResponse } = await import('../src/lib/arabiyah.js');
+ok(FEATURES.length === 6, '6 mode belajar terdaftar');
+ok(ARABIC_KEYS.length === 32, '32 tombol keyboard hijaiyah');
+ok(FEATURES.every((f) => f.sample && f.title && f.subtitle), 'setiap mode punya contoh & deskripsi');
+for (const f of FEATURES) {
+  const res = generateSmartResponse(f.sample, f);
+  ok(res.startsWith(`MODE ${f.title}`), `respons mode ${f.id} berawalan penanda mode`);
+  ok(res.includes(f.sample) || f.id === 'kamus', `respons mode ${f.id} mengutip teks masukan`);
+  ok(res.includes('Gunakan uraian ini sebagai pendamping belajar'), `respons mode ${f.id} memuat panduan belajar`);
+}
+const cancer = generateSmartResponse(FEATURES[0].sample, FEATURES[0]);
+ok(cancer.includes("nā'ib al-fā'il"), 'contoh khusus kanker memuat analisis naib fa il');
+ok(generateSmartResponse('   ', FEATURES[1]).includes('MODE'), 'masukan kosong tidak membuat respons rusak');
+const { default: Arabiyah } = await import('../src/components/Arabiyah.jsx');
+const arabiyahHtml = renderToString(React.createElement(Arabiyah, { page: data.pages[0], onOpenPage: () => {} }));
+ok(arabiyahHtml.includes('PUSAT PEMBELAJARAN BAHASA ARAB'), 'komponen Arabiyah dirender');
+ok(arabiyahHtml.includes('Dari kitab'), 'komponen Arabiyah memakai konteks halaman kitab');
+
 console.log(fail ? `\n${fail} pemeriksaan GAGAL` : '\nSemua pemeriksaan lulus');
 process.exit(fail ? 1 : 0);
