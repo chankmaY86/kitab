@@ -240,6 +240,22 @@ Kolom Latin §1A bukan pensahihan bacaan; vokalnya asumsi karena naskah gundul.
 | `scripts/build_unduhan_asmak_thomthomiyah.py` | Pembangun paket unduhan ini |
 | `scripts/serve_unduhan.py` | Halaman unduh langsung (live preview, port 8000) |
 
+## Tautan unduh langsung (jalur utama)
+
+Cabang `arena/dc140e9f-kitab` sudah di-push ke GitHub. Tautan ini **tidak lewat proxy
+live preview sandbox**, jadi tidak terkena error 502:
+
+| Berkas | Tautan |
+|---|---|
+| Paket lengkap .zip | `https://raw.githubusercontent.com/fatimah86-dot/kitab/arena/dc140e9f-kitab/UNDUHAN_ASMAK_THOMTHOMIYAH.zip` |
+| Transkrip .docx | `https://raw.githubusercontent.com/fatimah86-dot/kitab/arena/dc140e9f-kitab/TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx` |
+| Terjemah Syarah .md | `https://raw.githubusercontent.com/fatimah86-dot/kitab/arena/dc140e9f-kitab/TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md` |
+| Edisi baca offline .html | `https://raw.githubusercontent.com/fatimah86-dot/kitab/arena/dc140e9f-kitab/BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html` |
+
+Halaman GitHub: `https://github.com/fatimah86-dot/kitab/blob/arena/dc140e9f-kitab/UNDUHAN_ASMAK_THOMTHOMIYAH.zip`
+(tombol *Download raw file*). Berkas `UNDUHAN_LINK_LANGSUNG.html` berisi kumpulan
+tautan siap klik; ia hasil-generate lokal dan tidak masuk Git.
+
 ## Reproduksi
 
 ```

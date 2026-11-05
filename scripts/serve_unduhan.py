@@ -11,12 +11,32 @@ Semua tautan relatif (tidak ada localhost di sisi browser).
 import html
 import mimetypes
 import os
+import subprocess
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 PORT = int(os.environ.get("PORT", "8000"))
+
+
+def github_raw_base() -> str:
+    """Dasar tautan unduh GitHub — tidak bergantung pada host preview sandbox."""
+    try:
+        remote = subprocess.check_output(
+            ["git", "remote", "get-url", "origin"], cwd=ROOT,
+            text=True).strip()
+        branch = subprocess.check_output(
+            ["git", "branch", "--show-current"], cwd=ROOT,
+            text=True).strip()
+        slug = remote.split("github.com/")[-1].removesuffix(".git")
+        return f"https://raw.githubusercontent.com/{slug}/{branch}"
+    except Exception:
+        return ("https://raw.githubusercontent.com/fatimah86-dot/kitab/"
+                "arena/dc140e9f-kitab")
+
+
+GH_RAW = github_raw_base()
 
 # (nama berkas, judul, keterangan, utama?)
 ENTRIES = [
@@ -120,6 +140,20 @@ dua facsimile, dan skrip reproduksi.</p>
 <a class="big" href="/download/{big}" download="{big}">⬇ Unduh {html.escape(big)}</a>
 </div>
 
+<div class="card" style="border-color:#86efac;background:#f0fdf4">
+<strong>Tautan GitHub (paling andal — tidak lewat proxy preview)</strong>
+<div class="tip">Kalau halaman ini error 502 atau tombol di atas tidak merespons, pakai
+tautan langsung dari GitHub. Cabang sudah di-push ke
+<code>arena/dc140e9f-kitab</code>.</div>
+<div style="margin-top:10px">
+<a class="btn btn-utama" href="{GH_RAW}/{big}">⬇ Unduh ZIP dari GitHub</a>
+&nbsp;
+<a class="btn" href="{GH_RAW}/TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx">⬇ DOCX dari GitHub</a>
+&nbsp;
+<a class="btn" href="{GH_RAW}/TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md">⬇ Terjemah dari GitHub</a>
+</div>
+</div>
+
 <div class="card">
 <table>{''.join(rows)}</table>
 </div>
@@ -207,25 +241,22 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def write_landing():
-    """Tulis berkas HTML ber-tautan absolut untuk dibuka lewat present_file.
+    """Tulis berkas HTML ber-tautan unduh ABSOLUT GitHub untuk present_file.
 
-    Berkas ini bersifat lokal-sandbox (memuat E2B_SANDBOX_ID), jadi tidak
-    dimasukkan ke Git; lihat .gitignore.
+    Sengaja tidak memakai host preview sandbox: proxy live preview bisa 502.
+    Berkas ini hasil-generate lokal, tidak masuk Git (lihat .gitignore).
     """
-    sid = os.environ.get("E2B_SANDBOX_ID")
-    if not sid:
-        return None
-    host = f"https://{PORT}-{sid}.e2b.app"
     items = [
         ("UNDUHAN_ASMAK_THOMTHOMIYAH.zip", "⬇ Paket lengkap (.zip) — disarankan"),
         ("TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx", "⬇ Transkrip lengkap (.docx)"),
         ("TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md", "⬇ Terjemah Syarah (.md)"),
         ("BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html", "⬇ Edisi baca offline (.html)"),
+        ("CATATAN_UNDUHAN_ASMAK_THOMTHOMIYAH.md", "⬇ Catatan unduhan (.md)"),
         ("TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.md", "⬇ Master Markdown (.md)"),
     ]
     lis = "".join(
-        f'<li><a href="{host}/download/{html.escape(n)}">{html.escape(t)}</a>'
-        f'<br><small>{host}/download/{html.escape(n)}</small></li>'
+        f'<li><a href="{GH_RAW}/{html.escape(n)}" target="_blank" rel="noopener">'
+        f'{html.escape(t)}</a><br><small>{GH_RAW}/{html.escape(n)}</small></li>'
         for n, t in items
     )
     doc = f"""<!DOCTYPE html><html lang="id"><head><meta charset="utf-8">
@@ -237,12 +268,16 @@ h1{{color:#064e3b;font-size:1.5rem}} li{{margin:14px 0;list-style:none;
 background:#f8fafc;border:1px solid #dbe3ee;border-radius:9px;padding:12px 16px}}
 a{{color:#1e3a8a;font-weight:600;text-decoration:none}} a:hover{{text-decoration:underline}}
 small{{color:#64748b;word-break:break-all}} .note{{background:#fff7ed;border:1px solid #fed7aa;
-border-radius:9px;padding:12px 16px;color:#7c2d12;font-size:.9rem}}</style></head><body>
-<h1>Tautan unduh langsung</h1>
-<p>Klik salah satu tautan di bawah. Kalau panel preview memblokir unduhan,
-buka <a href="{host}/" target="_blank" rel="noopener">halaman unduhan ↗</a> di tab baru.</p>
+border-radius:9px;padding:12px 16px;color:#7c2d12;font-size:.9rem}}
+.ok{{background:#f0fdf4;border:1px solid #86efac;border-radius:9px;padding:12px 16px;
+color:#14532d;font-size:.9rem}}</style></head><body>
+<h1>Tautan unduh langsung (GitHub)</h1>
+<div class="ok"><strong>Ini jalur utama.</strong> Tautan di bawah dihosting GitHub,
+bukan lewat proxy live preview sandbox — jadi tidak terkena error 502.
+Berkas sudah di-push ke cabang <code>arena/dc140e9f-kitab</code>.</div>
+<p>Klik tautan untuk mengunduh. Untuk <code>.md</code>/<code>.html</code> yang tampil
+di browser, klik kanan → <em>Save as…</em>; semuanya juga ada di dalam ZIP.</p>
 <ul>{lis}</ul>
-<p><a href="{host}/preview" target="_blank" rel="noopener">Baca edisi offline di tab baru ↗</a></p>
 <div class="note"><strong>Catatan Ustadz Yoad.</strong> Terjemah selesai sebatas kunci
 permanen §4.3 (kaifiyat, waktu, hari, بخور, syarat). Asma', azimah, wafaq, thilasm, dan
 angka Arab-Indik tetap dijaga, tidak diterjemahkan.</div>

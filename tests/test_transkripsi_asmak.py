@@ -199,6 +199,14 @@ class TranskripAsmakTests(unittest.TestCase):
         self.assertIn("TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx", page)
         self.assertIn('href="/preview"', page)
         self.assertIn("tidak diterjemahkan", page)  # batas muhafazhah tetap tampil
+        # Jalur cadangan GitHub wajib ada: proxy live preview bisa 502.
+        self.assertIn("raw.githubusercontent.com", srv.GH_RAW)
+        self.assertIn("raw.githubusercontent.com", page)
+        landing = srv.write_landing()
+        self.assertTrue(landing.is_file())
+        self.assertIn("raw.githubusercontent.com",
+                      landing.read_text(encoding="utf-8"))
+        self.assertNotIn(".e2b.app", landing.read_text(encoding="utf-8"))
 
     def test_html_offline_mandiri(self):
         h = (ROOT / "BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html").read_text(
