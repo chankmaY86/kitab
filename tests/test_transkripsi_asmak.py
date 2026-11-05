@@ -147,6 +147,49 @@ class TranskripAsmakTests(unittest.TestCase):
 
     def test_builder_docx_ada(self):
         self.assertTrue((ROOT / "scripts" / "build_docx_asmak_thomthomiyah.py").is_file())
+        self.assertTrue((ROOT / "scripts" / "build_unduhan_asmak_thomthomiyah.py").is_file())
+
+    def test_paket_unduhan(self):
+        import zipfile
+        zpath = ROOT / "UNDUHAN_ASMAK_THOMTHOMIYAH.zip"
+        self.assertTrue(zpath.is_file())
+        self.assertGreater(zpath.stat().st_size, 50000)
+        with zipfile.ZipFile(zpath) as z:
+            self.assertIsNone(z.testzip())
+            names = set(z.namelist())
+        for n in [
+            "CATATAN_UNDUHAN_ASMAK_THOMTHOMIYAH.md",
+            "TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx",
+            "TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.md",
+            "TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md",
+            "BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html",
+            "KUNCI_PERMANEN_USTADZ_YOAD.md",
+            "assets/asmak_thomthomiyah_hal02_khatim_tulis_tangan.png",
+            "assets/asmak_thomthomiyah_hal10_asma_kabir.png",
+        ]:
+            with self.subTest(anggota=n):
+                self.assertIn(n, names)
+
+    def test_terjemah_syarah_berdiri_sendiri(self):
+        t = (ROOT / "TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md").read_text(
+            encoding="utf-8")
+        self.assertIn("SELESAI", t)
+        self.assertIn("§4.3", t)
+        self.assertIn("TIDAK diterjemahkan", t)
+        self.assertEqual(len(re.findall(r"^\d+\. \*\*", t, re.M)), 18,
+                         "18 poin terjemah syarah harus lengkap")
+        self.assertNotIn("٣٢٥١", t)  # angka kotak وافق tidak masuk bagian terjemah
+        self.assertIn("| ٧٧ |", t)  # tabel jadwal hari/waktu
+
+    def test_html_offline_mandiri(self):
+        h = (ROOT / "BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html").read_text(
+            encoding="utf-8")
+        self.assertEqual(h.count("data:image/png;base64,"), 2)
+        self.assertNotIn('src="assets/', h)
+        self.assertEqual(len(re.findall(r'<table dir="rtl"', h)), 15)
+        self.assertIn("dir=\"rtl\"", h)
+        self.assertIn("طمطكطجيشمحمدأل", h)
+        self.assertNotIn("**", h)
 
 
 if __name__ == "__main__":

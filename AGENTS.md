@@ -17,6 +17,6 @@
 
 - Master terjemahan: `REVISI_FINAL_5_LAPIS_BERSIH_HAL01-65.md`; berkas batch lama adalah arsip, jangan disinkronkan massal (lihat `CATATAN_REVISI_2026-10-27.md`).
 - Sumber tunggal crop wafaq: `rajah_anwar_FINAL_300DPI/` — jangan crop ulang dari PDF (lihat `MANIFEST_WAFAQ_CROP_SAYA.md`).
-- Reproduksi: `python3 -m venv .venv && .venv/bin/pip install -r requirements-editorial.txt && .venv/bin/python scripts/build_final_65.py && .venv/bin/python scripts/build_preview_65.py && .venv/bin/python scripts/build_docx_asmak_thomthomiyah.py && .venv/bin/python -m unittest discover -s tests -v`.
+- Reproduksi: `python3 -m venv .venv && .venv/bin/pip install -r requirements-editorial.txt && .venv/bin/python scripts/build_final_65.py && .venv/bin/python scripts/build_preview_65.py && .venv/bin/python scripts/build_docx_asmak_thomthomiyah.py && .venv/bin/python scripts/build_unduhan_asmak_thomthomiyah.py && .venv/bin/python -m unittest discover -s tests -v`.
 - Klaim khasiat/perkara gaib adalah isi naskah tradisi, bukan bukti medis atau jaminan hasil; penelaahan ahli bahasa Arab tetap diperlukan sebelum penerbitan.
 - Teks Arab disimpan RTL apa adanya; jangan melatinisasi lafaz azimah, asma', atau angka wafaq. **Pengecualian tercatat:** atas permintaan eksplisit pemilik kitab (5 Nov 2026), `TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.md` §1A memuat lapis Latin **bantu** untuk kunci asma' dengan skema yang dinyatakan; lapis itu bukan pengganti lafaz, bukan terjemahan, dan angka wafaq tetap Arab-Indik. Di berkas lain, larangan muhafazhah berlaku penuh.

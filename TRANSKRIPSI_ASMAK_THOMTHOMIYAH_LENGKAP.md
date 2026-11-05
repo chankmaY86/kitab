@@ -6,7 +6,7 @@
 
 > **Peringatan editorial.** Ini adalah transkripsi dokumenter naskah tradisi hikmah/ruhaniyyah. Klaim khasiat, penyembuhan, penundukan, dan perkara gaib di dalamnya adalah **isi naskah**, bukan bukti medis, bukan anjuran amal, dan bukan jaminan hasil. Penelaahan ahli bahasa Arab dan penyunting naskah tetap diperlukan sebelum penerbitan.
 >
-> **Permintaan kali ini = transkrip lengkap**, bukan bedah 10 langkah. Kunci permanen tetap dipakai untuk **muhafazhah**: azimah, asma', thilasm, dan angka wafaq dijaga apa adanya, tidak diterjemahkan dan tidak dilatinisasi.
+> **Permintaan kali ini = transkrip lengkap**, bukan bedah 10 langkah. Kunci permanen tetap dipakai untuk **muhafazhah**: azimah, asma', thilasm, dan angka wafaq dijaga apa adanya dan tidak diterjemahkan. Latinisasi **hanya** pada lapis bantu §1A atas permintaan eksplisit 5 November 2026 dengan skema yang dinyatakan; ia bukan pengganti lafaz Arab.
 
 ---
 
