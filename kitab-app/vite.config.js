@@ -1,0 +1,24 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  base: './',
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: false,
+    // Preview Arena memakai host berbasis port; izinkan semua host/origin.
+    allowedHosts: true,
+    cors: true,
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 4173,
+    allowedHosts: true,
+  },
+  build: {
+    target: 'es2020',
+    chunkSizeWarningLimit: 2000,
+  },
+});
