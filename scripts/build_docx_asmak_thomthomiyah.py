@@ -232,7 +232,7 @@ def add_footer_page_number(doc):
     p = sec.footer.paragraphs[0]
     set_bidi(p, False)
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    style_run(p.add_run("Transkrip الأسماء الطمطمية · Ustadz Yoad · hlm. "),
+    style_run(p.add_run("الأسماء الطمطمية · Ustadz Yoad · hlm. "),
               False, size=8.5, color=C_MUTED)
     r = p.add_run()
     fld = OxmlElement("w:fldSimple")
@@ -240,8 +240,26 @@ def add_footer_page_number(doc):
     r._r.addnext(fld)
 
 
-def build():
-    md = MD_PATH.read_text(encoding="utf-8")
+DEFAULT_COVER = {
+    "title": "Transkripsi Lengkap — الأسماء الطمطمية",
+    "subject": "Transkrip 12 halaman + i'rob fusha + latinisasi bantu kunci asma'",
+    "kicker": "TRANSKRIPSI LENGKAP",
+    "arab_title": "الأسماء الطمطمية",
+    "arab_sub": "أسماء آصف ابن برخيا وكيفية العمل بيها",
+    "source": "Sumber: asmak thomthomiyah.pdf · 12 halaman · Google Drive",
+    "binding": "Mengikat: KUNCI_PERMANEN_USTADZ_YOAD.md (Mazhab Muhafazhah)",
+    "warning": ("PERHATIAN: azimah, asma', thilasm, dan angka wafaq dijaga apa adanya dan TIDAK "
+                "diterjemahkan. Lapis Latin pada §1A hanyalah alat bantu indeks atas permintaan "
+                "eksplisit; lafaz Arab tetap yang mengikat."),
+}
+
+
+def build(md_path=None, out=None, cover=None):
+    """Bangun DOCX dari Markdown. Parameter opsional untuk edisi turunan."""
+    src = Path(md_path) if md_path else MD_PATH
+    dst = Path(out) if out else OUT
+    c = {**DEFAULT_COVER, **(cover or {})}
+    md = src.read_text(encoding="utf-8")
     lines = md.splitlines()
 
     doc = Document()
@@ -255,35 +273,32 @@ def build():
     normal.font.name = "Calibri"
     normal.font.size = Pt(10.5)
 
-    doc.core_properties.title = "Transkripsi Lengkap — الأسماء الطمطمية"
+    doc.core_properties.title = c["title"]
     doc.core_properties.author = "Ustadz Yoad"
-    doc.core_properties.subject = "Transkrip 12 halaman + i'rob fusha + latinisasi bantu kunci asma'"
+    doc.core_properties.subject = c["subject"]
     doc.core_properties.keywords = "Kitab Gundul, Nahwu Sharaf, Muhafazhah, Asma', Wafaq"
 
     # ---- Sampul ----
-    add_para(doc, "TRANSKRIPSI LENGKAP", align=WD_ALIGN_PARAGRAPH.CENTER,
+    add_para(doc, c["kicker"], align=WD_ALIGN_PARAGRAPH.CENTER,
              size=20, color=C_EMERALD, bold=True, space_after=2)
-    add_para(doc, "الأسماء الطمطمية", rtl=True,
+    add_para(doc, c["arab_title"], rtl=True,
              align=WD_ALIGN_PARAGRAPH.CENTER, size=26,
              color=C_EMERALD, bold=True, space_after=2)
-    add_para(doc, "أسماء آصف ابن برخيا وكيفية العمل بيها", rtl=True,
+    add_para(doc, c["arab_sub"], rtl=True,
              align=WD_ALIGN_PARAGRAPH.CENTER, size=15,
              color=C_NAVY, space_after=14)
-    add_para(doc, "Sumber: asmak thomthomiyah.pdf · 12 halaman · Google Drive",
+    add_para(doc, c["source"],
              align=WD_ALIGN_PARAGRAPH.CENTER, size=10, color=C_MUTED,
              space_after=2)
     add_para(doc, "Disusun 5 November 2026 · Ustadz Yoad · Pakar Nahwu Sharaf",
              align=WD_ALIGN_PARAGRAPH.CENTER, size=10, color=C_MUTED,
              space_after=2)
-    add_para(doc, "Mengikat: KUNCI_PERMANEN_USTADZ_YOAD.md (Mazhab Muhafazhah)",
+    add_para(doc, c["binding"],
              align=WD_ALIGN_PARAGRAPH.CENTER, size=10, color=C_MUTED,
              space_after=14)
-    p = add_para(doc,
-                 "PERHATIAN: azimah, asma', thilasm, dan angka wafaq dijaga apa adanya dan TIDAK "
-                 "diterjemahkan. Lapis Latin pada §1A hanyalah alat bantu indeks atas permintaan "
-                 "eksplisit; lafaz Arab tetap yang mengikat.",
-                 align=WD_ALIGN_PARAGRAPH.CENTER, size=9.5, color=C_GOLD,
-                 italic=True, fill="FFF7ED", space_after=8)
+    add_para(doc, c["warning"],
+             align=WD_ALIGN_PARAGRAPH.CENTER, size=9.5, color=C_GOLD,
+             italic=True, fill="FFF7ED", space_after=8)
     doc.add_page_break()
 
     i = 0
@@ -398,8 +413,8 @@ def build():
         i += 1
 
     add_footer_page_number(doc)
-    doc.save(OUT)
-    return OUT
+    doc.save(dst)
+    return dst
 
 
 if __name__ == "__main__":

@@ -44,6 +44,10 @@ ENTRIES = [
      "Semua berkas dalam satu unduhan — disarankan", True),
     ("TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx", "Transkrip lengkap (.docx)",
      "Berkas utama Word: 12 HAL, 15 wafaq RTL, 2 facsimile", False),
+    ("TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.docx", "Terjemahan lengkap + transliterasi (.docx)",
+     "Terjemah Indonesia menyeluruh + alih aksara Latin; wafaq dikecualikan", False),
+    ("TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.md", "Terjemahan lengkap (.md)",
+     "Sumber Markdown edisi terjemah; 12 HAL + Lampiran 15 wafaq", False),
     ("BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html", "Edisi baca offline (.html)",
      "Mandiri, gambar tertanam, bisa dibaca/print di browser", False),
     ("TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md", "Terjemah Syarah (.md)",
@@ -151,6 +155,8 @@ tautan langsung dari GitHub. Cabang sudah di-push ke
 <a class="btn" href="{GH_RAW}/TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx">⬇ DOCX dari GitHub</a>
 &nbsp;
 <a class="btn" href="{GH_RAW}/TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md">⬇ Terjemah dari GitHub</a>
+&nbsp;
+<a class="btn" href="{GH_RAW}/TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.docx">⬇ Terjemahan lengkap dari GitHub</a>
 </div>
 </div>
 
@@ -249,6 +255,8 @@ def write_landing():
     items = [
         ("UNDUHAN_ASMAK_THOMTHOMIYAH.zip", "⬇ Paket lengkap (.zip) — disarankan"),
         ("TRANSKRIPSI_ASMAK_THOMTHOMIYAH_LENGKAP.docx", "⬇ Transkrip lengkap (.docx)"),
+        ("TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.docx", "⬇ TERJEMAHAN LENGKAP + transliterasi (.docx)"),
+        ("TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.md", "⬇ Terjemahan lengkap (.md)"),
         ("TERJEMAH_SYARAH_FUSHA_ASMAK_THOMTHOMIYAH.md", "⬇ Terjemah Syarah (.md)"),
         ("BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html", "⬇ Edisi baca offline (.html)"),
         ("CATATAN_UNDUHAN_ASMAK_THOMTHOMIYAH.md", "⬇ Catatan unduhan (.md)"),

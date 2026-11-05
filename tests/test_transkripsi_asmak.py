@@ -208,6 +208,82 @@ class TranskripAsmakTests(unittest.TestCase):
                       landing.read_text(encoding="utf-8"))
         self.assertNotIn(".e2b.app", landing.read_text(encoding="utf-8"))
 
+    def test_edisi_terjemahan_lengkap_md(self):
+        f = ROOT / "TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.md"
+        self.assertTrue(f.is_file())
+        t = f.read_text(encoding="utf-8")
+        self.assertEqual(len(re.findall(r"^### HAL \d\d", t, re.M)), 12)
+        self.assertNotIn("{{WAFAQ_APPENDIX}}", t)
+        self.assertEqual(t.count("[DIKECUALIKAN — WAFAQ]"), 34,
+                         "19 penanda di tabel + 15 di Lampiran F")
+        self.assertEqual(len(re.findall(r"^#### Wafaq \d+", t, re.M)), 15)
+        self.assertEqual(len(re.findall(r'<table dir="rtl"', t)), 15)
+        self.assertNotIn("\u0410", t)  # tidak ada huruf Kiril terselip
+        # Skema & kejujuran filologis harus dinyatakan.
+        for s in ["Skema transliterasi", "ijtihad bantu", "non-leksikal",
+                  "kecuali wafaq", "Istilah Falak/Hikmah", "Muhammad"]:
+            with self.subTest(s=s):
+                self.assertIn(s, t)
+        # Contoh transliterasi prose & terjemah Indonesia.
+        for s in ["Bismillāhi al-Maliki", "Allāhumma ṣalli",
+                  "Dengan nama Allah", "Ya Allah, limpahkanlah shalawat",
+                  "ṭamaṭakaṭajaysyamaḥamadaʾl", "al-Jaljalūtiyyah"]:
+            with self.subTest(s=s):
+                self.assertIn(s, t)
+        # 15 kotak wafaq harus identik dengan master (angka tak berubah).
+        # <br> pada sel tengah dinormalkan menjadi spasi, &nbsp; menjadi kosong.
+        tables = re.findall(r'<table dir="rtl"[^>]*>.*?</table>', t, re.S)
+        self.assertEqual(len(tables), 15)
+        for i, (html, expected) in enumerate(zip(tables, WAFAG), 1):
+            got = []
+            for tr in re.findall(r"<tr>(.*?)</tr>", html, re.S):
+                row = []
+                for cell in re.findall(r"<td>(.*?)</td>", tr, re.S):
+                    cell = cell.replace("&nbsp;", "").replace("<br>", " ")
+                    row.append(" ".join(cell.split()))
+                got.append(row)
+            with self.subTest(wafaq_ke=i):
+                self.assertEqual(got, expected)
+
+    @unittest.skipUnless(HAS_DOCX, "python-docx belum terpasang")
+    def test_docx_terjemahan_lengkap(self):
+        f = ROOT / "TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.docx"
+        self.assertTrue(f.is_file())
+        self.assertGreater(f.stat().st_size, 40000)
+        d = Document(f)
+        self.assertIn("Terjemahan Lengkap", d.core_properties.title)
+        self.assertEqual(len(d.inline_shapes), 2)
+        rtl = [x for x in d.tables
+               if x._tbl.tblPr.find(qn("w:bidiVisual")) is not None]
+        self.assertEqual(len(rtl), 15)
+        for i, (table, expected) in enumerate(zip(rtl, WAFAG), 1):
+            got = [[" ".join(c.text.split()) for c in r.cells]
+                   for r in table.rows]
+            with self.subTest(wafaq_ke=i):
+                self.assertEqual(got, expected)
+        text = "\n".join(p.text for p in d.paragraphs)
+        for x in d.tables:
+            for row in x.rows:
+                text += "\n" + " | ".join(c.text for c in row.cells)
+        self.assertNotIn("**", text)
+        self.assertNotIn("`", text)
+        self.assertIn("طمطكطجيشمحمدأل", text)
+        self.assertIn("٣٢٥١", text)
+
+    def test_paket_unduhan_memuat_edisi_terjemahan(self):
+        import zipfile
+        with zipfile.ZipFile(ROOT / "UNDUHAN_ASMAK_THOMTHOMIYAH.zip") as z:
+            names = set(z.namelist())
+        self.assertIn("TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.docx", names)
+        self.assertIn("TERJEMAHAN_LENGKAP_ASMAK_THOMTHOMIYAH.md", names)
+
+    def test_master_tetap_muhafazhah(self):
+        """Edisi terjemah tidak boleh mengubah status transkrip master."""
+        self.assertEqual(self.md.count(PENANDA), 20)
+        self.assertIn("## 1. TEKS ARAB ASLI (MUHAFAZHAH — BIARKAN)", self.md)
+        self.assertIn("Pengecualian tercatat #2",
+                      (ROOT / "AGENTS.md").read_text(encoding="utf-8"))
+
     def test_html_offline_mandiri(self):
         h = (ROOT / "BACA_OFFLINE_ASMAK_THOMTHOMIYAH.html").read_text(
             encoding="utf-8")
